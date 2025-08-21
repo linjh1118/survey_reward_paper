@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据加载测试</title>
+</head>
+<body>
+    <h1>数据加载测试</h1>
+    <div id="status">正在测试...</div>
+    <div id="results"></div>
+
+    <script>
+        async function testDataLoading() {
+            const statusDiv = document.getElementById('status');
+            const resultsDiv = document.getElementById('results');
+            
+            try {
+                // 测试统计文件
+                statusDiv.textContent = '正在加载统计信息...';
+                const statsResponse = await fetch('survey_data/extraction_stats.json');
+                console.log('统计响应:', statsResponse.status, statsResponse.statusText);
+                
+                if (!statsResponse.ok) {
+                    throw new Error(`统计文件加载失败: ${statsResponse.status}`);
+                }
+                
+                const stats = await statsResponse.json();
+                console.log('统计数据:', stats);
+                
+                resultsDiv.innerHTML += `<p>✅ 统计文件加载成功</p>`;
+                resultsDiv.innerHTML += `<p>总论文数: ${stats.total_papers}</p>`;
+                
+                // 测试论文文件
+                statusDiv.textContent = '正在加载论文数据...';
+                const papersResponse = await fetch('survey_data/all_survey_papers.jsonl');
+                console.log('论文响应:', papersResponse.status, papersResponse.statusText);
+                
+                if (!papersResponse.ok) {
+                    throw new Error(`论文文件加载失败: ${papersResponse.status}`);
+                }
+                
+                const papersText = await papersResponse.text();
+                console.log('论文文本长度:', papersText.length);
+                
+                const lines = papersText.trim().split('\n');
+                console.log('论文行数:', lines.length);
+                
+                const papers = [];
+                for (const line of lines) {
+                    if (line.trim()) {
+                        try {
+                            papers.push(JSON.parse(line));
+                        } catch (e) {
+                            console.warn('解析失败:', e);
+                        }
+                    }
+                }
+                
+                console.log('解析后论文数:', papers.length);
+                
+                if (papers.length > 0) {
+                    console.log('第一篇论文:', papers[0]);
+                    
+                    // 检查章节分类
+                    const testTimeScaling = papers.filter(p => p.survey_categories?.test_time_scaling);
+                    const rewardRL = papers.filter(p => p.survey_categories?.reward_model_rl);
+                    const benchmark = papers.filter(p => p.survey_categories?.reward_model_benchmark);
+                    
+                    resultsDiv.innerHTML += `<p>✅ 论文数据加载成功</p>`;
+                    resultsDiv.innerHTML += `<p>总论文数: ${papers.length}</p>`;
+                    resultsDiv.innerHTML += `<p>Test-Time Scaling: ${testTimeScaling.length}</p>`;
+                    resultsDiv.innerHTML += `<p>Reward Model RL: ${rewardRL.length}</p>`;
+                    resultsDiv.innerHTML += `<p>Benchmark: ${benchmark.length}</p>`;
+                    
+                    statusDiv.textContent = '✅ 所有数据加载成功！';
+                } else {
+                    throw new Error('没有解析到任何论文数据');
+                }
+                
+            } catch (error) {
+                console.error('测试失败:', error);
+                statusDiv.textContent = '❌ 测试失败';
+                resultsDiv.innerHTML += `<p style="color: red;">错误: ${error.message}</p>`;
+            }
+        }
+        
+        // 页面加载后自动测试
+        window.addEventListener('load', testDataLoading);
+    </script>
+</body>
+</html>

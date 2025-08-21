@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Reward Model Survey - Related Papers">
+    <title>Reward Model Survey - Related Papers</title>
+    <link rel="icon" type="image/png" href="assets/logo2-removebg-preview.png">
+    <link rel="shortcut icon" type="image/png" href="assets/logo2-removebg-preview.png">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/reward_model_survey.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const errorDiv = document.createElement('div');
+            errorDiv.style.position = 'fixed';
+            errorDiv.style.bottom = '10px';
+            errorDiv.style.left = '10px';
+            errorDiv.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
+            errorDiv.style.color = 'white';
+            errorDiv.style.padding = '10px';
+            errorDiv.style.borderRadius = '5px';
+            errorDiv.style.zIndex = '10000';
+            errorDiv.style.maxWidth = '80%';
+            errorDiv.textContent = `错误: ${message} (${source}:${lineno}:${colno})`;
+            document.body.appendChild(errorDiv);
+            
+            setTimeout(() => errorDiv.remove(), 5000);
+            
+            return false;
+        };
+    </script>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="header-content">
+                <div class="header-left">
+                    <a href="index.html" class="back-button">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 12H5m0 0l7 7m-7-7l7-7"/>
+                        </svg>
+                        <span>返回主页</span>
+                    </a>
+                </div>
+                
+                <div class="header-center">
+                    <div class="site-logo">
+                        <img src="assets/logo2-removebg-preview.png" alt="Survey Logo" class="logo-image">
+                        <span class="site-title">Reward Model Survey</span>
+                    </div>
+                </div>
+                
+                <div class="header-controls">
+                    <div class="survey-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="totalPapers">0</span>
+                            <span class="stat-label">总论文</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="filteredPapers">0</span>
+                            <span class="stat-label">当前显示</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <!-- 章节选择器 -->
+            <div class="chapter-selector-container">
+                <div class="chapter-selector">
+                    <h2>综述章节 / Survey Chapters</h2>
+                    <div class="chapter-buttons">
+                        <button class="chapter-button active" data-chapter="all">
+                            <div class="chapter-icon">📊</div>
+                            <div class="chapter-info">
+                                <span class="chapter-title">All Chapters</span>
+                                <span class="chapter-subtitle">所有相关论文</span>
+                                <span class="chapter-count" id="allCount">0</span>
+                            </div>
+                        </button>
+                        <button class="chapter-button" data-chapter="test_time_scaling">
+                            <div class="chapter-icon">⚡</div>
+                            <div class="chapter-info">
+                                <span class="chapter-title">Test-Time Scaling</span>
+                                <span class="chapter-subtitle">第一章：测试时计算扩展</span>
+                                <span class="chapter-count" id="testTimeCount">0</span>
+                            </div>
+                        </button>
+                        <button class="chapter-button" data-chapter="reward_model_rl">
+                            <div class="chapter-icon">🎯</div>
+                            <div class="chapter-info">
+                                <span class="chapter-title">Reward Model for RL</span>
+                                <span class="chapter-subtitle">第二章：强化学习奖励模型</span>
+                                <span class="chapter-count" id="rewardRLCount">0</span>
+                            </div>
+                        </button>
+                        <button class="chapter-button" data-chapter="reward_model_benchmark">
+                            <div class="chapter-icon">📋</div>
+                            <div class="chapter-info">
+                                <span class="chapter-title">Reward Model Benchmark</span>
+                                <span class="chapter-subtitle">第三章：奖励模型基准测试</span>
+                                <span class="chapter-count" id="benchmarkCount">0</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 关键词显示区域 -->
+            <div class="keywords-container" id="keywordsContainer" style="display: none;">
+                <div class="keywords-content">
+                    <h3>热门关键词 / Top Keywords</h3>
+                    <div class="keywords-tags" id="keywordsTags"></div>
+                </div>
+            </div>
+
+            <!-- 论文列表 -->
+            <div class="papers-section">
+                <div class="loading-container" id="loadingContainer">
+                    <div class="loading-spinner"></div>
+                    <p>加载论文数据...</p>
+                </div>
+                
+                <div class="paper-container" id="paperContainer">
+                    <!-- 论文卡片将在这里动态生成 -->
+                </div>
+            </div>
+        </main>
+
+        <!-- 论文详情模态框 -->
+        <div class="paper-modal" id="paperModal">
+            <div class="paper-modal-content">
+                <div class="paper-modal-header">
+                    <h2 id="modalTitle">论文标题</h2>
+                    <div class="modal-controls">
+                        <div class="paper-navigation">
+                            <button id="prevPaper" class="nav-button" title="上一篇">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M15 18l-6-6 6-6"/>
+                                </svg>
+                            </button>
+                            <span id="paperPosition" class="paper-position">1 / 100</span>
+                            <button id="nextPaper" class="nav-button" title="下一篇">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M9 18l6-6-6-6"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <button id="closeModal" class="close-button">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="paper-modal-body" id="modalBody">
+                    <!-- 论文详情内容 -->
+                </div>
+                <div class="paper-modal-footer">
+                    <div class="modal-links">
+                        <a id="paperLink" href="#" target="_blank" class="modal-link">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14 3v4a1 1 0 0 0 1 1h4"/>
+                                <path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/>
+                            </svg>
+                            arXiv页面
+                        </a>
+                        <a id="pdfLink" href="#" target="_blank" class="modal-link">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <path d="M14 2v6h6"/>
+                                <path d="M16 13H8"/>
+                                <path d="M16 17H8"/>
+                                <path d="M10 9H8"/>
+                            </svg>
+                            PDF下载
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/reward_model_survey.js"></script>
+</body>
+</html>

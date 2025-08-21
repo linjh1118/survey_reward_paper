@@ -1,0 +1,143 @@
+{
+  "total_papers": 28598,
+  "chapter_stats": {
+    "reward_model_benchmark": {
+      "name": "Reward Model Benchmark",
+      "count": 24848,
+      "top_keywords": [
+        [
+          "dataset",
+          9357
+        ],
+        [
+          "accuracy",
+          8029
+        ],
+        [
+          "evaluation",
+          6444
+        ],
+        [
+          "benchmark",
+          6364
+        ],
+        [
+          "consistency",
+          2950
+        ],
+        [
+          "fine-grained",
+          2903
+        ],
+        [
+          "safety",
+          1454
+        ],
+        [
+          "reliability",
+          1295
+        ],
+        [
+          "annotation",
+          1235
+        ],
+        [
+          "question answering",
+          1128
+        ]
+      ]
+    },
+    "test_time_scaling": {
+      "name": "Test-Time Scaling",
+      "count": 8278,
+      "top_keywords": [
+        [
+          "scale",
+          5688
+        ],
+        [
+          "scaling",
+          1256
+        ],
+        [
+          "test-time",
+          640
+        ],
+        [
+          "inference time",
+          471
+        ],
+        [
+          "inference-time",
+          342
+        ],
+        [
+          "o1",
+          223
+        ],
+        [
+          "reasoning model",
+          138
+        ],
+        [
+          "test time",
+          128
+        ],
+        [
+          "iterative refinement",
+          126
+        ],
+        [
+          "multi-step reasoning",
+          123
+        ]
+      ]
+    },
+    "reward_model_rl": {
+      "name": "Reward Model for RL",
+      "count": 7147,
+      "top_keywords": [
+        [
+          "alignment",
+          3838
+        ],
+        [
+          "reinforcement learning",
+          1690
+        ],
+        [
+          "preference",
+          929
+        ],
+        [
+          "comparison",
+          688
+        ],
+        [
+          "ranking",
+          448
+        ],
+        [
+          "policy optimization",
+          358
+        ],
+        [
+          "pairwise",
+          300
+        ],
+        [
+          "DPO",
+          264
+        ],
+        [
+          "reward model",
+          190
+        ],
+        [
+          "direct preference optimization",
+          161
+        ]
+      ]
+    }
+  }
+}
